@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Es Ubi Segar - Rasakan Kelezatannya</title>
+    <style>
+        /* --- RESET & UMUM --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #fdfbf7;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- VARIABEL WARNA --- */
+        :root {
+            --primary-color: #ff8c00; /* Orange Ubi */
+            --secondary-color: #fff3e0; /* Cream lembut */
+            --text-color: #4a4a4a;
+            --accent-color: #6d4c41; /* Coklat gelap */
+        }
+
+        /* --- HEADER --- */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .btn-pesan {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .btn-pesan:hover {
+            background-color: #e67e00;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1560008511-11c63416e52d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .hero-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: transform 0.3s;
+            display: inline-block;
+        }
+
+        .hero-btn:hover {
+            transform: scale(1.05);
+            background-color: #e67e00;
+        }
+
+        /* --- MENU SECTION --- */
+        .menu-section {
+            padding: 5rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .section-subtitle {
+            color: #777;
+            margin-bottom: 40px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .menu-img {
+            height: 200px;
+            background-color: #eee;
+            background-image: url('https://images.unsplash.com/photo-1560008511-11c63416e52d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80'); /* Ganti dengan foto ubi asli */
+            background-size: cover;
+            background-position: center;
+        }
+
+        .menu-info {
+            padding: 20px;
+            text-align: left;
+        }
+
+        .menu-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .menu-desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .menu-price {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* --- ABOUT SECTION --- */
+        .about-section {
+            background-color: var(--secondary-color);
+            padding: 5rem 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .about-img {
+            flex: 1 1 400px;
+            height: 400px;
+            background-image: url('https://images.unsplash.com/photo-1595855793046-6e6d3324d49d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80');
+            background-size: cover;
+            border-radius: 20px;
+            box-shadow: 10px 10px 0px var(--primary-color);
+        }
+
+        .about-text {
+            flex: 1 1 400px;
+        }
+
+        .about-text h2 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        /* --- CONTACT SECTION --- */
+        .contact-section {
+            padding: 5rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .info-box {
+            background: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            flex: 1 1 200px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: var(--accent-color);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 2.5rem; }
+            .navbar { flex-direction: column; gap: 15px; }
+            .nav-links { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGASI -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Es Ubi Segar</div>
+            <ul class="nav-links">
+                <li><a href="#home">Beranda</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li><a href="#about">Tentang</a></li>
+                <li><a href="#contact" class="btn-pesan">Pesan Sekarang</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Segar Alami Nikmatnya</h1>
+            <p>Kami menghadirkan kelezatan Ubi terbaik dengan tekstur lembut dan kuah santan segar.</p>
+            <a href="#menu" class="hero-btn">Lihat Menu Spesial</a>
+        </div>
+    </section>
+
+    <!-- MENU SECTION -->
+    <section id="menu" class="menu-section">
+        <h2 class="section-title">Menu Favorit Kami</h2>
+        <p class="section-subtitle">Pilih kesegaran favoritmu hari ini</p>
+
+        <div class="menu-grid">
+            <!-- Item 1 -->
+            <div class="menu-card">
+                <div class="menu-img" style="background-image: url('https://img.freepik.com/free-photo/creative-bubble-tea-with-brown-sugar_1339-1332.jpg?size=338&ext=jpg');"></div>
+                <div class="menu-info">
+                    <div class="menu-title">Es Ubi Special</div>
+                    <div class="menu-desc">Ubi rebus lembut dengan kuah santan kental dan taburan kinca.</div>
+                    <div class="menu-price">Rp 15.000</div>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="menu-card">
+                <div class="menu-img" style="background-image: url('https://img.freepik.com/free-photo/glass-milk-tea-with-brown-sugar_1339-1328.jpg?size=338&ext=jpg');"></div>
+                <div class="menu-info">
+                    <div class="menu-title">Es Ubi Durian</div>
+                    <div class="menu-desc">Perpaduan manisnya ubi dengan legitnya durian medan pilihan.</div>
+                    <div class="menu-price">Rp 25.000</div>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="menu-card">
+                <div class="menu-img" style="background-image: url('https://img.freepik.com/free-photo/top-view-sweet-potato-balls-glass-bowl_466689-74995.jpg?size=338&ext=jpg');"></div>
+                <div class="menu-info">
+                    <div class="menu-title">Bubur Ubi Ketan</div>
+                    <div class="menu-desc">Hidangan hangat gurih dengan ketan, ubi, danopez仁.</div>
+                    <div class="menu-price">Rp 12.000</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TENTANG KAMI -->
+    <section id="about" class="about-section">
+        <div class="about-img"></div>
+        <div class="about-text">
+            <h2>Bahan Pilihan, Rasa Terjamin</h2>
+            <p>Di Es Ubi Segar, kami percaya bahwa kelezatan datang dari bahan-bahan alami. Kami menggunakan ubi jakarta/ori pilihan yang dikukus segar setiap hari, dipadukan dengan santan murni sans pemanis buatan.</p>
+            <br>
+            <p>Cita rasa traditional yang tetap Hygiene adalah prioritas utama kami untuk keluarga Anda.</p>
+        </div>
+    </section>
+
+    <!-- KONTAK & LOKASI -->
+    <section id="contact" class="contact-section">
+        <h2 class="section-title">Hubungi Kami</h2>
+        <p class="section-subtitle">Klik untuk memesan via WhatsApp atau kunjungi toko kami.</p>
+        
+        <a href="https://wa.me/6281234567890" target="_blank" class="hero-btn" style="background-color: #25D366;">Hubungi via WhatsApp</a>
+
+        <div class="contact-info">
+            <div class="info-box">
+                <h3>Alamat</h3>
+                <p>Jl. Raya Contoh No. 123,<br>Kota Makanan, Indonesia</p>
+            </div>
+            <div class="info-box">
+                <h3>Jam Buka</h3>
+                <p>Senin - Minggu<br>08.00 - 21.00 WIB</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2023 Es Ubi Segar. All Rights Reserved.</p>
+    </footer>
+
+    <!-- SMOOTH SCROLL SCRIPT -->
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
