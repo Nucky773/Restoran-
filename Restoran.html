@@ -1,297 +1,583 @@
-<!doctype html>
-<html lang="id" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Burger Boss</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { montserrat: ['Montserrat', 'sans-serif'] },
-          colors: {
-            flame: '#FF4500',
-            mustard: '#FFB800',
-            charcoal: '#1a1a1a',
-            smoke: '#2d2d2d',
-            neon: '#FF6B00'
-          }
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiFiKu - Layanan Pemasangan WiFi Terpercaya</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ============================================
+           RESET & VARIABLES
+           ============================================ */
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #1D4ED8;
+            --primary-light: #3B82F6;
+            --secondary: #7C3AED;
+            --secondary-dark: #6D28D9;
+            --accent: #06B6D4;
+            --white: #FFFFFF;
+            --light: #F3F4F6;
+            --dark: #0F172A;
+            --gray: #64748B;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
         }
-      }
-    }
-  </script>
-  <style>
-    html, body { height: 100%; margin: 0; }
-    * { font-family: 'Montserrat', sans-serif; }
-    
-    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-    @keyframes glow { 0%,100%{box-shadow:0 0 20px #FF4500,0 0 40px #FF450055} 50%{box-shadow:0 0 30px #FFB800,0 0 60px #FFB80055} }
-    @keyframes slideUp { from{transform:translateY(100%);opacity:0} to{transform:translateY(0);opacity:1} }
-    @keyframes fadeIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
-    @keyframes smoke { 0%{opacity:0.6;transform:translateY(0) scale(1)} 100%{opacity:0;transform:translateY(-40px) scale(1.5)} }
-    @keyframes splashFade { 0%{opacity:1} 80%{opacity:1} 100%{opacity:0;pointer-events:none} }
-    @keyframes burgerDrop { 0%{transform:translateY(-60px) rotate(-5deg);opacity:0} 60%{transform:translateY(10px) rotate(2deg);opacity:1} 100%{transform:translateY(0) rotate(0deg);opacity:1} }
-    @keyframes neonPulse { 0%,100%{text-shadow:0 0 10px #FF4500,0 0 20px #FF4500,0 0 40px #FF6B00} 50%{text-shadow:0 0 20px #FFB800,0 0 40px #FFB800,0 0 80px #FF6B00} }
-    
-    .float { animation: float 3s ease-in-out infinite; }
-    .glow-btn { animation: glow 2s ease-in-out infinite; }
-    .slide-up { animation: slideUp 0.4s ease-out; }
-    .fade-in { animation: fadeIn 0.3s ease-out; }
-    .smoke-particle { animation: smoke 2s ease-out infinite; }
-    .splash-screen { animation: splashFade 2.5s ease-in-out forwards; }
-    .burger-drop { animation: burgerDrop 0.8s ease-out; }
-    .neon-text { animation: neonPulse 2s ease-in-out infinite; }
-    
-    .card-hover { transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
-    .card-hover:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 20px 40px rgba(255,69,0,0.3); }
-    
-    .cart-badge { min-width: 18px; height: 18px; font-size: 10px; }
-    
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #1a1a1a; }
-    ::-webkit-scrollbar-thumb { background: #FF4500; border-radius: 3px; }
-  </style>
-  <style>body { box-sizing: border-box; }</style>
- </head>
- <body class="h-full bg-charcoal text-white overflow-x-hidden"><!-- Splash Screen -->
-  <div id="splash" class="splash-screen fixed inset-0 z-[999] bg-charcoal flex flex-col items-center justify-center">
-   <div class="burger-drop text-8xl mb-4">
-    🍔
-   </div>
-   <h1 class="text-4xl font-black neon-text text-flame">BURGER BOSS</h1>
-   <div class="flex gap-2 mt-6">
-    <div class="w-3 h-3 rounded-full bg-flame smoke-particle"></div>
-    <div class="w-3 h-3 rounded-full bg-mustard smoke-particle" style="animation-delay:0.3s"></div>
-    <div class="w-3 h-3 rounded-full bg-neon smoke-particle" style="animation-delay:0.6s"></div>
-   </div>
-  </div><!-- Main App -->
-  <div id="app" class="h-full flex flex-col w-full"><!-- Navbar -->
-   <nav class="sticky top-0 z-50 bg-charcoal/95 backdrop-blur-md border-b border-smoke px-4 py-3 flex items-center justify-between">
-    <h1 id="nav-title" class="text-xl font-black text-flame">🍔 BURGER BOSS</h1>
-    <div class="flex items-center gap-4"><button onclick="openSearch()" class="text-gray-400 hover:text-mustard transition"><i data-lucide="search" class="w-5 h-5"></i></button> <button onclick="showView('cart')" class="relative text-gray-400 hover:text-mustard transition"> <i data-lucide="shopping-cart" class="w-5 h-5"></i> <span id="cart-count" class="cart-badge absolute -top-2 -right-2 bg-flame text-white rounded-full flex items-center justify-center font-bold hidden">0</span> </button>
-    </div>
-   </nav><!-- Content -->
-   <main id="main-content" class="flex-1 overflow-auto pb-20"><!-- HOME VIEW -->
-    <div id="view-home" class="p-4 space-y-6"><!-- Hero -->
-     <section class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-charcoal via-smoke to-charcoal border border-flame/20 p-6">
-      <div class="absolute top-2 right-2 text-6xl float opacity-80">
-       🍔
-      </div>
-      <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-flame via-mustard to-neon"></div>
-      <h2 id="hero-title" class="text-3xl font-black leading-tight mb-2">TASTE THE<br><span class="text-flame neon-text">FIRE</span></h2>
-      <p class="text-gray-400 text-sm mb-4">Premium handcrafted burgers, grilled to perfection</p><button onclick="showView('menu')" class="glow-btn bg-flame hover:bg-red-600 text-white font-bold px-6 py-3 rounded-full transition"> Order Now 🔥 </button>
-     </section><!-- Promo Banner -->
-     <section id="promo-banner" class="relative rounded-xl bg-gradient-to-r from-flame/20 via-mustard/10 to-neon/20 border border-mustard/30 p-4 overflow-hidden">
-      <div class="absolute -top-2 -right-2 bg-mustard text-charcoal text-xs font-bold px-2 py-1 rounded-bl-lg">
-       PROMO
-      </div>
-      <p id="promo-text" class="text-mustard font-bold text-lg">🎉 DISKON 30% Semua Menu Hari Ini!</p>
-      <p class="text-gray-400 text-xs mt-1">*Berlaku hingga pukul 23:59</p>
-     </section><!-- Categories -->
-     <section>
-      <h3 class="text-lg font-bold mb-3">Kategori</h3>
-      <div class="flex gap-3 overflow-x-auto pb-2" id="categories"><button onclick="filterCategory('all')" class="cat-btn shrink-0 bg-flame text-white px-4 py-2 rounded-full text-sm font-semibold transition">Semua</button> <button onclick="filterCategory('beef')" class="cat-btn shrink-0 bg-smoke text-gray-300 px-4 py-2 rounded-full text-sm font-semibold hover:bg-flame hover:text-white transition">🥩 Beef</button> <button onclick="filterCategory('chicken')" class="cat-btn shrink-0 bg-smoke text-gray-300 px-4 py-2 rounded-full text-sm font-semibold hover:bg-flame hover:text-white transition">🍗 Chicken</button> <button onclick="filterCategory('cheese')" class="cat-btn shrink-0 bg-smoke text-gray-300 px-4 py-2 rounded-full text-sm font-semibold hover:bg-flame hover:text-white transition">🧀 Cheese</button> <button onclick="filterCategory('spicy')" class="cat-btn shrink-0 bg-smoke text-gray-300 px-4 py-2 rounded-full text-sm font-semibold hover:bg-flame hover:text-white transition">🌶️ Spicy</button> <button onclick="filterCategory('combo')" class="cat-btn shrink-0 bg-smoke text-gray-300 px-4 py-2 rounded-full text-sm font-semibold hover:bg-flame hover:text-white transition">🍟 Combo</button>
-      </div>
-     </section><!-- Menu Grid -->
-     <section>
-      <h3 class="text-lg font-bold mb-3">Menu Populer</h3>
-      <div id="menu-grid" class="grid grid-cols-2 gap-3"></div>
-     </section>
-    </div><!-- MENU VIEW -->
-    <div id="view-menu" class="p-4 space-y-4 hidden">
-     <div class="flex items-center gap-3 mb-2"><button onclick="showView('home')" class="text-gray-400 hover:text-white"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
-      <h2 class="text-xl font-bold">Semua Menu</h2>
-     </div>
-     <div id="full-menu-grid" class="grid grid-cols-2 gap-3"></div>
-    </div><!-- DETAIL VIEW -->
-    <div id="view-detail" class="p-4 hidden"><button onclick="showView('home')" class="flex items-center gap-2 text-gray-400 hover:text-white mb-4"><i data-lucide="arrow-left" class="w-5 h-5"></i> Kembali</button>
-     <div id="detail-content" class="fade-in"></div>
-    </div><!-- CART VIEW -->
-    <div id="view-cart" class="p-4 hidden">
-     <div class="flex items-center gap-3 mb-4"><button onclick="showView('home')" class="text-gray-400 hover:text-white"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
-      <h2 class="text-xl font-bold">Keranjang</h2>
-     </div>
-     <div id="cart-items" class="space-y-3"></div>
-     <div id="cart-empty" class="text-center py-12 text-gray-500">
-      <div class="text-5xl mb-3">
-       🛒
-      </div>
-      <p>Keranjang masih kosong</p>
-     </div>
-     <div id="cart-footer" class="hidden mt-6 p-4 bg-smoke rounded-xl border border-flame/20">
-      <div class="flex justify-between mb-3"><span class="text-gray-400">Total</span> <span id="cart-total" class="text-xl font-bold text-mustard">Rp 0</span>
-      </div><button onclick="checkout()" class="w-full glow-btn bg-flame hover:bg-red-600 text-white font-bold py-3 rounded-full transition"> Checkout 🔥 </button>
-     </div>
-    </div><!-- CHECKOUT VIEW -->
-    <div id="view-checkout" class="p-4 hidden">
-     <div class="flex items-center gap-3 mb-4"><button onclick="showView('cart')" class="text-gray-400 hover:text-white"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
-      <h2 class="text-xl font-bold">Checkout</h2>
-     </div>
-     <div class="fade-in space-y-4">
-      <div class="bg-smoke rounded-xl p-4 border border-flame/10">
-       <h3 class="font-bold mb-3">Metode Pembayaran</h3>
-       <div class="space-y-2"><label class="flex items-center gap-3 p-3 rounded-lg bg-charcoal border border-smoke hover:border-flame/30 cursor-pointer transition"> <input type="radio" name="payment" value="gopay" checked class="accent-flame"> <span>GoPay</span> </label> <label class="flex items-center gap-3 p-3 rounded-lg bg-charcoal border border-smoke hover:border-flame/30 cursor-pointer transition"> <input type="radio" name="payment" value="ovo" class="accent-flame"> <span>OVO</span> </label> <label class="flex items-center gap-3 p-3 rounded-lg bg-charcoal border border-smoke hover:border-flame/30 cursor-pointer transition"> <input type="radio" name="payment" value="dana" class="accent-flame"> <span>DANA</span> </label> <label class="flex items-center gap-3 p-3 rounded-lg bg-charcoal border border-smoke hover:border-flame/30 cursor-pointer transition"> <input type="radio" name="payment" value="cod" class="accent-flame"> <span>Cash on Delivery</span> </label>
-       </div>
-      </div>
-      <div class="bg-smoke rounded-xl p-4 border border-flame/10">
-       <h3 class="font-bold mb-2">Ringkasan</h3>
-       <div id="checkout-summary"></div>
-       <div class="border-t border-gray-700 mt-3 pt-3 flex justify-between"><span class="font-bold">Total</span> <span id="checkout-total" class="font-bold text-mustard"></span>
-       </div>
-      </div><button onclick="placeOrder()" id="place-order-btn" class="w-full glow-btn bg-flame hover:bg-red-600 text-white font-bold py-4 rounded-full transition text-lg"> Pesan Sekarang 🍔 </button>
-     </div>
-    </div><!-- SUCCESS VIEW -->
-    <div id="view-success" class="p-4 hidden">
-     <div class="fade-in text-center py-16">
-      <div class="text-7xl mb-4 float">
-       ✅
-      </div>
-      <h2 class="text-2xl font-black text-mustard mb-2">Pesanan Berhasil!</h2>
-      <p class="text-gray-400 mb-6">Burger kamu sedang dimasak 🔥</p><button onclick="resetOrder()" class="bg-flame hover:bg-red-600 text-white font-bold px-8 py-3 rounded-full transition">Pesan Lagi</button>
-     </div>
-    </div>
-   </main><!-- Bottom Nav -->
-   <nav class="fixed bottom-0 left-0 right-0 z-50 bg-charcoal/95 backdrop-blur-md border-t border-smoke">
-    <div class="flex justify-around py-2"><button onclick="showView('home')" class="nav-btn flex flex-col items-center gap-1 p-2 text-flame"> <i data-lucide="home" class="w-5 h-5"></i><span class="text-[10px]">Home</span> </button> <button onclick="showView('menu')" class="nav-btn flex flex-col items-center gap-1 p-2 text-gray-500 hover:text-flame transition"> <i data-lucide="book-open" class="w-5 h-5"></i><span class="text-[10px]">Menu</span> </button> <button onclick="showView('home')" class="nav-btn flex flex-col items-center gap-1 p-2 text-gray-500 hover:text-flame transition"> <i data-lucide="percent" class="w-5 h-5"></i><span class="text-[10px]">Promo</span> </button> <button onclick="showView('cart')" class="nav-btn flex flex-col items-center gap-1 p-2 text-gray-500 hover:text-flame transition"> <i data-lucide="shopping-bag" class="w-5 h-5"></i><span class="text-[10px]">Cart</span> </button>
-    </div>
-   </nav><!-- Search Modal -->
-   <div id="search-modal" class="fixed inset-0 z-[100] bg-charcoal/95 backdrop-blur-md hidden flex-col p-4">
-    <div class="flex items-center gap-3 mb-4"><button onclick="closeSearch()" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button> <input id="search-input" type="text" placeholder="Cari burger favorit..." class="flex-1 bg-smoke border border-flame/20 rounded-full px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-flame" oninput="searchBurgers(this.value)">
-    </div>
-    <div id="search-results" class="space-y-3 overflow-auto flex-1"></div>
-   </div>
-  </div>
-  <script>
-// Burger data
-const burgers = [
-  { id:'b1', name:'Classic Smash', category:'beef', price:35000, rating:4.8, spice:1, emoji:'🍔', desc:'Daging sapi premium smashed tipis, crispy di luar juicy di dalam.' },
-  { id:'b2', name:'Double Cheese', category:'cheese', price:45000, rating:4.9, spice:0, emoji:'🧀', desc:'Double patty dengan lelehan keju cheddar dan mozzarella.' },
-  { id:'b3', name:'Spicy Inferno', category:'spicy', price:42000, rating:4.7, spice:3, emoji:'🌶️', desc:'Burger pedas level dewa dengan saus ghost pepper.' },
-  { id:'b4', name:'Crispy Chicken', category:'chicken', price:32000, rating:4.6, spice:1, emoji:'🍗', desc:'Ayam fillet crispy dengan saus mayo spesial.' },
-  { id:'b5', name:'BBQ Beast', category:'beef', price:48000, rating:4.9, spice:1, emoji:'🥩', desc:'Patty tebal dengan saus BBQ smoky dan bawang goreng.' },
-  { id:'b6', name:'Combo Meal', category:'combo', price:55000, rating:4.8, spice:1, emoji:'🍟', desc:'Burger + French Fries + Soft Drink. Hemat banget!' },
-  { id:'b7', name:'Truffle Burger', category:'cheese', price:62000, rating:5.0, spice:0, emoji:'🍄', desc:'Premium beef dengan truffle mayo dan keju gruyere.' },
-  { id:'b8', name:'Fire Chicken', category:'spicy', price:38000, rating:4.5, spice:2, emoji:'🔥', desc:'Ayam pedas berlevel dengan saus sriracha homemade.' },
-];
 
-let cart = [];
-let currentCategory = 'all';
-let currentData = [];
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
 
-// Data SDK
-const dataHandler = {
-  onDataChanged(data) {
-    currentData = data;
-    cart = data.map(d => ({ burgerId: d.burger_id, quantity: d.quantity, toppings: d.toppings, __backendId: d.__backendId }));
-    updateCartUI();
-  }
-};
+        html {
+            scroll-behavior: smooth;
+        }
 
-async function initApp() {
-  const r = await window.dataSdk.init(dataHandler);
-  if (!r.isOk) console.error('Data SDK init failed');
-}
-initApp();
+        body {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-// Element SDK
-const defaultConfig = {
-  hero_title: 'TASTE THE FIRE',
-  promo_text: '🎉 DISKON 30% Semua Menu Hari Ini!',
-  background_color: '#1a1a1a',
-  surface_color: '#2d2d2d',
-  text_color: '#ffffff',
-  primary_action_color: '#FF4500',
-  secondary_action_color: '#FFB800'
-};
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        img { max-width: 100%; }
 
-function applyConfig(config) {
-  const el = (id) => document.getElementById(id);
-  const hero = el('hero-title');
-  if (hero) hero.innerHTML = (config.hero_title || defaultConfig.hero_title).replace('FIRE', '<span class="text-flame neon-text">FIRE</span>');
-  const promo = el('promo-text');
-  if (promo) promo.textContent = config.promo_text || defaultConfig.promo_text;
-  
-  document.body.style.backgroundColor = config.background_color || defaultConfig.background_color;
-}
+        /* ============================================
+           LOADING SCREEN
+           ============================================ */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
 
-window.elementSdk.init({
-  defaultConfig,
-  onConfigChange: async (config) => { applyConfig(config); },
-  mapToCapabilities: (config) => ({
-    recolorables: [
-      { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
-      { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
-      { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
-      { get: () => config.primary_action_color || defaultConfig.primary_action_color, set: (v) => { config.primary_action_color = v; window.elementSdk.setConfig({ primary_action_color: v }); } },
-      { get: () => config.secondary_action_color || defaultConfig.secondary_action_color, set: (v) => { config.secondary_action_color = v; window.elementSdk.setConfig({ secondary_action_color: v }); } },
-    ],
-    borderables: [],
-    fontEditable: undefined,
-    fontSizeable: undefined
-  }),
-  mapToEditPanelValues: (config) => new Map([
-    ['hero_title', config.hero_title || defaultConfig.hero_title],
-    ['promo_text', config.promo_text || defaultConfig.promo_text]
-  ])
-});
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
 
-// Views
-function showView(view) {
-  document.querySelectorAll('[id^="view-"]').forEach(el => el.classList.add('hidden'));
-  document.getElementById('view-' + view).classList.remove('hidden');
-  if (view === 'menu') renderFullMenu();
-  if (view === 'cart') renderCart();
-  if (view === 'checkout') renderCheckout();
-}
+        .wifi-loader {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
 
-// Render menu cards
-function renderCard(b) {
-  const spiceIcons = '🌶️'.repeat(b.spice);
-  return `<div class="card-hover bg-smoke rounded-xl overflow-hidden border border-gray-800 cursor-pointer" onclick="showDetail('${b.id}')">
-    <div class="h-24 bg-gradient-to-br from-charcoal to-smoke flex items-center justify-center text-5xl">${b.emoji}</div>
-    <div class="p-3">
-      <h4 class="font-bold text-sm truncate">${b.name}</h4>
-      <div class="flex items-center gap-1 mt-1"><span class="text-mustard text-xs">⭐ ${b.rating}</span>${spiceIcons ? `<span class="text-xs">${spiceIcons}</span>` : ''}</div>
-      <div class="flex items-center justify-between mt-2">
-        <span class="text-flame font-bold text-sm">Rp ${b.price.toLocaleString('id')}</span>
-        <button onclick="event.stopPropagation();addToCart('${b.id}')" class="bg-flame hover:bg-red-600 text-white w-7 h-7 rounded-full flex items-center justify-center transition text-lg leading-none">+</button>
-      </div>
-    </div>
-  </div>`;
-}
+        .wifi-loader i {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            color: var(--primary-light);
+            animation: wifiPulse 1.5s infinite;
+        }
 
-function renderMenuGrid() {
-  const filtered = currentCategory === 'all' ? burgers : burgers.filter(b => b.category === currentCategory);
-  document.getElementById('menu-grid').innerHTML = filtered.map(renderCard).join('');
-}
+        .wifi-loader i:nth-child(2) { animation-delay: 0.2s; }
+        .wifi-loader i:nth-child(3) { animation-delay: 0.4s; }
+        .wifi-loader i:nth-child(4) { animation-delay: 0.6s; }
 
-function renderFullMenu() {
-  document.getElementById('full-menu-grid').innerHTML = burgers.map(renderCard).join('');
-}
+        @keyframes wifiPulse {
+            0%, 100% { opacity: 0.3; transform: translateX(-50%) scale(0.8); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1); }
+        }
 
-function filterCategory(cat) {
-  currentCategory = cat;
-  document.querySelectorAll('.cat-btn').forEach(btn => {
-    btn.className = btn.className.replace(/bg-flame text-white/g, 'bg-smoke text-gray-300').replace(/bg-smoke text-gray-300/g, 'bg-smoke text-gray-300');
-  });
-  renderMenuGrid();
-}
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            animation: blink 1s infinite;
+        }
 
-// Detail
-function showDetail(id) {
-  const b = burgers.find(x => x.id === id);
-  if (!b) return;
-  document.getElementById('detail-content').innerHTML = `
-    <div class="fade-in">
-      <div class="h-48 bg-gradient-to-br from-smoke to-charcoal rounded-2xl flex items-center justify-center text-8xl mb-4 border border-flame/10">${b.emoji}</div>
-      <h2 class="text-2xl font-black">${b.name}</h2>
-      <div class="flex items-center gap-3 mt-2"><span class="text-mustard">⭐ ${b.rating}</span><span class="text-gray-500">|</span><span>${'🌶️'.repeat(b.spice) || 'Tidak pedas'}</span></div>
-      <p class="text-gray-400 mt-3">${b.desc}</p>
-      <div class="mt-4 p-3 bg-smoke rounded-xl border border-gray-700">
-        <p class="text-sm text-gray-400 mb-2">Topping Tambahan:</p>
-        <di
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ============================================
+           NAVBAR
+           ============================================ */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s;
+            background: transparent;
+        }
+
+        .navbar.scrolled {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+            padding: 0.8rem 5%;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .logo i {
+            color: var(--primary-light);
+            font-size: 1.8rem;
+        }
+
+        .logo span {
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-light);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-light);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 5% 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.3), transparent 70%);
+            animation: pulse 4s infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.2), transparent 70%);
+            animation: pulse 5s infinite reverse;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        /* Particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            animation: float 15s infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .hero-content {
+            flex: 1;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            animation: slideInLeft 0.8s ease;
+        }
+
+        .hero-badge span {
+            background: var(--success);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            animation: slideInLeft 0.8s ease 0.2s both;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 30px;
+            max-width: 500px;
+            animation: slideInLeft 0.8s ease 0.4s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            animation: slideInLeft 0.8s ease 0.6s both;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--glass-border);
+            color: var(--white);
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--glass);
+            border-color: var(--primary-light);
+        }
+
+        .hero-visual {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            animation: fadeInRight 1s ease 0.4s both;
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 30px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .tech-card {
+            position: absolute;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            padding: 15px 20px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .tech-card.card1 {
+            top: 20%;
+            left: 0;
+            animation-delay: 0s;
+        }
+
+        .tech-card.card2 {
+            bottom: 20%;
+            right: 0;
+            animation-delay: 1s;
+        }
+
+        .tech-card i {
+            font-size: 1.5rem;
+            color: var(--primary-light);
+        }
+
+        .tech-card .info h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .tech-card .info p {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin: 0;
+        }
+
+        /* ============================================
+           SERVICES SECTION
+           ============================================ */
+        .services {
+            padding: 100px 5%;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .section-header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-light);
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.2);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 25px;
+            font-size: 2rem;
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .service-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .service-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        /* ============================================
+           PACKAGES SECTION
+           ============================================ */
+        .packages {
+            padding: 100px 5%;
+            background: linear-gradient(180deg, transparent, rgba(37, 99, 235, 0.1), transparent);
+        }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .package-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 40px 30px;
+            position: relative;
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+
+        .package-card.featured {
+            border-color: var(--primary-light);
+            transform: scale(1.05);
+        }
+
+        .package-card.featured::before {
+            content: 'BEST VALUE';
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+        }
+
+        .package-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(37, 99, 235, 0.3);
+        }
+
+        .package-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .package-speed {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text
