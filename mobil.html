@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neon Racer</title>
+<style>
+html,body{margin:0;padding:0;overflow:hidden;background:#000;font-family:'Courier New',monospace;color:#0ff;text-align:center}
+#gameCanvas{background:#111;display:block;margin:0 auto;border:2px solid #0ff}
+#ui{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;background:rgba(0,0,0,0.8)}
+button{background:#0ff;color:#000;border:none;padding:15px 30px;font-size:20px;cursor:pointer;border-radius:8px}
+#scoreDisplay{position:absolute;top:10px;left:10px;font-size:18px;color:#0ff}
+#controls{position:absolute;bottom:20px;width:100%;display:flex;justify-content:space-between;padding:0 40px}
+.ctrlBtn{background:rgba(0,255,255,0.2);border:2px solid #0ff;color:#0ff;font-size:30px;border-radius:50%;width:60px;height:60px;line-height:60px}
+</style>
+</head>
+<body>
+<canvas id="gameCanvas" width="400" height="600"></canvas>
+<div id="ui">
+<h1>🚗 Neon Racer 🚗</h1>
+<button id="startBtn">Mulai</button>
+</div>
+<div id="scoreDisplay"></div>
+<div id="controls">
+<div class="ctrlBtn" id="leftBtn">⟵</div>
+<div class="ctrlBtn" id="rightBtn">⟶</div>
+</div>
+<script>
+const canvas=document.getElementById("gameCanvas");
+const ctx=canvas.getContext("2d");
+const ui=document.getElementById("ui");
+const startBtn=document.getElementById("startBtn");
+const scoreDisplay=document.getElementById("scoreDisplay");
+const leftBtn=document.getElementById("leftBtn");
+const rightBtn=document.getElementById("rightBtn");
+
+let player={x:180,y:500,w:40,h:80,color:"#0ff",lane:1};
+let enemies=[];
+let lines=[];
+let speed=5;
+let score=0;
+let highScore=0;
+let gameOver=false;
+let gameStarted=false;
+let laneX=[80,180,280];
+let touchStartX=null;
+
+function resetGame(){
+player={x:180,y:500,w:40,h:80,color:"#0ff",lane:1};
+enemies=[];
+lines=[];
+speed=5;
+score=0;
+gameOver=false;
+for(let i=0;i<20;i++){lines.push({y:i*30});}
+}
+
+function spawnEnemy(){
+let lane=Math.floor(Math.random()*3);
+enemies.push({x:laneX[lane],y:-100,w:40,h:80,color:"#f0f"});
+}
+
+function drawRoad(){
+ctx.fillStyle="#111";
+ctx.fillRect(0,0,400,600);
+ctx.strokeStyle="#0ff";
+ctx.lineWidth=4;
+ctx.beginPath();
+ctx.moveTo(133,0);
+ctx.lineTo(133,600);
+ctx.moveTo(266,0);
+ctx.lineTo(266,600);
+ctx.stroke();
+ctx.strokeStyle="#0ff";
+ctx.lineWidth=2;
+for(let l of lines){
+ctx.beginPath();
+ctx.moveTo(200,l.y);
+ctx.lineTo(200,l.y+20);
+ctx.stroke();
+}
+}
+
+function drawPlayer(){
+ctx.fillStyle=player.color;
+ctx.fillRect(player.x,player.y,player.w,player.h);
+}
+
+function drawEnemies(){
+for(let e of enemies){
+ctx.fillStyle=e.color;
+ctx.fillRect(e.x,e.y,e.w,e.h);
+}
+}
+
+function update(){
+if(!gameStarted)return;
+if(gameOver)return;
+score+=0.1;
+if(score>highScore)highScore=Math.floor(score);
+speed+=0.001;
+for(let l of lines){
+l.y+=speed;
+if(l.y>600)l.y=-20;
+}
+for(let e of enemies){
+e.y+=speed;
+}
+enemies=enemies.filter(e=>e.y<700);
+if(Math.random()<0.02)speed>10?null:spawnEnemy();
+for(let e of enemies){
+if(e.x<player.x+player.w&&e.x+e.w>player.x&&e.y<player.y+player.h&&e.y+e.h>player.y){
+gameOver=true;
+setTimeout(showGameOver,500);
+}
+}
+draw();
+requestAnimationFrame(update);
+}
+
+function draw(){
+ctx.clearRect(0,0,400,600);
+drawRoad();
+drawPlayer();
+drawEnemies();
+scoreDisplay.innerHTML=`Skor: ${Math.floor(score)} | Tertinggi: ${highScore}`;
+}
+
+function showGameOver(){
+ui.style.display="flex";
+ui.innerHTML=`<h2>Game Over</h2><p>Skor: ${Math.floor(score)}</p><p>Skor Tertinggi: ${highScore}</p><button id="restartBtn">Main Lagi</button>`;
+document.getElementById("restartBtn").onclick=()=>{
+ui.innerHTML=`<h1>🚗 Neon Racer 🚗</h1><button id="startBtn">Mulai</button>`;
+document.getElementById("startBtn").onclick=startGame;
+};
+}
+
+function startGame(){
+ui.style.display="none";
+resetGame();
+gameStarted=true;
+update();
+}
+
+function moveLeft(){
+if(player.lane>0){player.lane--;player.x=laneX[player.lane];}
+}
+function moveRight(){
+if(player.lane<2){player.lane++;player.x=laneX[player.lane];}
+}
+
+document.addEventListener("keydown",e=>{
+if(e.key==="ArrowLeft"||e.key==="a")moveLeft();
+if(e.key==="ArrowRight"||e.key==="d")moveRight();
+});
+leftBtn.addEventListener("click",moveLeft);
+rightBtn.addEventListener("click",moveRight);
+
+canvas.addEventListener("touchstart",e=>{
+touchStartX=e.touches[0].clientX;
+});
+canvas.addEventListener("touchend",e=>{
+let dx=e.changedTouches[0].clientX-touchStartX;
+if(dx>50)moveRight();
+if(dx<-50)moveLeft();
+});
+
+startBtn.onclick=startGame;
+</script>
+</body>
+</html>
